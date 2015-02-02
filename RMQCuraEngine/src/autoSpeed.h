@@ -43,6 +43,12 @@ namespace autospeed{
 
 			return speed / 35.0*100;
 		}
+
+		int setEachSpeed_New(double eachArea)
+		{
+			float speed = (0.164*sqrt(eachArea)+9.672);
+			return speed / 35.0*100;
+		}
 	};
 }
 #endif//AUTOSPEED_H

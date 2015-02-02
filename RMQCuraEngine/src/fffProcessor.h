@@ -543,13 +543,38 @@ private:
         int prevExtruder = gcodeLayer.getExtruder();
         bool extruderChanged = gcodeLayer.setExtruder(volumeIdx);
 
+        SliceLayer* layer = &storage.volumes[volumeIdx].layers[layerNr];
+
         if(layerNr>0)
 		{
-        	int EachVolumeSpeed = fffProcessor::A_Speed.setEachspeed(layerNr, config.layerThickness);
-			cura::log("%d Layer Speed factor: %d%%\n",layerNr, EachVolumeSpeed);
+        	Polygon tmp_Poly;
+
+        	for(unsigned int partNr=0; partNr<layer->parts.size(); partNr++)
+			{
+				for(unsigned int n=0; n<layer->parts[partNr].outline.size(); n++)
+				{
+					for(unsigned int m=1; m<layer->parts[partNr].outline[n].size(); m++)
+					{
+						tmp_Poly.add(layer->parts[partNr].outline[n][m-1]);
+						tmp_Poly.add(layer->parts[partNr].outline[n][m]);
+					}
+					if (layer->parts[partNr].outline[n].size() > 0)
+					{
+						tmp_Poly.add(layer->parts[partNr].outline[n][layer->parts[partNr].outline[n].size()-1]);
+						tmp_Poly.add(layer->parts[partNr].outline[n][0]);
+					}
+				}
+			}
+
+			cura::logError("print area: %f\n", tmp_Poly.area()/1000000);
+
+        	//int EachVolumeSpeed = fffProcessor::A_Speed.setEachspeed(layerNr, config.layerThickness);
+			int NewSpeed = A_Speed.setEachSpeed_New(tmp_Poly.area()/1000000);
+
+			cura::log("%d Layer Speed factor: %d%%\n",layerNr, NewSpeed);
 			gcode.writeComment("LAYER:%d", layerNr);
-			gcode.writeComment("%d Layer Speed factor: %d%%", layerNr, EachVolumeSpeed);
-			gcodeLayer.setExtrudeSpeedFactor(EachVolumeSpeed);
+			gcode.writeComment("%d Layer Speed factor: %d%%", layerNr, NewSpeed);
+			gcodeLayer.setExtrudeSpeedFactor(NewSpeed);
 		}
         changeExtrution(layerNr, config.filamentFlow, 100); //Extruder Factor Change
 
@@ -559,8 +584,6 @@ private:
                 gcodeLayer.addTravel(storage.skirt[storage.skirt.size()-1].closestPointTo(gcode.getPositionXY()));
             gcodeLayer.addPolygonsByOptimizer(storage.skirt, &skirtConfig);
         }
-
-        SliceLayer* layer = &storage.volumes[volumeIdx].layers[layerNr];
         if (extruderChanged)
             addWipeTower(storage, gcodeLayer, layerNr, prevExtruder);
 
