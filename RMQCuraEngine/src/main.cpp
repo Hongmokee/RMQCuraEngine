@@ -36,7 +36,7 @@
 
 #include "autoSpeed.h"
 
-char arr[20][300]={"",};
+char arr[20][521]={"",};
 
 void print_usage()
 {
@@ -132,10 +132,6 @@ int main(int argc, char **argv)
             {
                 switch(*str)
                 {
-                case 'a':
-                	argn++;
-                	EachLayer = fopen(arr[argn], "rb");
-                	break;
                 case 'h':
                     print_usage();
                     exit(1);
@@ -145,11 +141,6 @@ int main(int argc, char **argv)
                 case 'p':
                     cura::enableProgressLogging();
                     break;
-                //case 'g':
-                //    argn++;
-                //    //Connect the GUI socket to the given port number.
-                //    processor.guiConnect(atoi(argv[argn]));
-                //    break;
                 case 'b':
                     argn++;
                     //The binaryMeshBlob is depricated and will be removed in the future.
@@ -172,6 +163,11 @@ int main(int argc, char **argv)
                         }
                     }
                     break;
+                case 'a':
+					{
+						EachLayer=1;
+						break;
+					}
                 case 's':
                     {
                         //Parse the given setting and store it.

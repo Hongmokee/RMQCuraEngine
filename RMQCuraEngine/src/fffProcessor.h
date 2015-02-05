@@ -35,7 +35,7 @@ private:
     GCodePathConfig supportConfig;
 public:
 
-    char buffer[1024];
+    char buffer[2048];
 
     fffProcessor(ConfigSettings& config)
     : config(config)
@@ -52,7 +52,7 @@ public:
 
     void recvCommand()
     {
-    	guiSocket.recvAll(buffer,1024);
+    	guiSocket.recvAll(buffer,2048);
     }
 
     void sendPolygonsToGui(const char* name, int layerNr, int32_t z, Polygons& polygons)
@@ -128,7 +128,6 @@ private:
     {
         timeKeeper.restart();
         SimpleModel* model = nullptr;
-        A_Speed.readEachCount();
 
         if (files.size() == 1 && files[0][0] == '$')
         {

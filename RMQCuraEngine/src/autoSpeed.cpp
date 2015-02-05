@@ -6,5 +6,5 @@
 #include "utils/logoutput.h"
 #include "utils/string.h"
 
-FILE* EachLayer = nullptr;
+int EachLayer = 0;
 
