@@ -36,7 +36,7 @@
 
 #include "autoSpeed.h"
 
-char arr[20][521]={"",};
+char arr[100][521]={"",};
 
 void print_usage()
 {
@@ -59,7 +59,7 @@ int setArr(const char buf[])
 	k=1;
 	while(1)
 	{
-		if(buf[k]=='/')
+		if(buf[k]=='*')
 		{
 			i++;
 			j=0;
@@ -69,7 +69,7 @@ int setArr(const char buf[])
 		j++;
 		k++;
 
-		if(buf[k]==2)
+		if(strncmp(arr[i],"-e",2)==0)
 			break;
 	}
 	return i;
@@ -168,6 +168,10 @@ int main(int argc, char **argv)
 						EachLayer=1;
 						break;
 					}
+				case 'e':
+				{
+					break;
+				}
                 case 's':
                     {
                         //Parse the given setting and store it.
